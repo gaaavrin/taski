@@ -13,20 +13,31 @@ import urllib.request
 
 PORT = 27852
 ROOT = pathlib.Path(__file__).parent
+STATE_FILE = ROOT / "state.json"
 
-def _state_file():
-    import platform
-    s = platform.system()
-    if s == "Darwin":
-        return pathlib.Path.home() / "Library" / "Application Support" / "Taski" / "state.json"
-    if s == "Windows":
-        base = pathlib.Path(os.environ.get("APPDATA", pathlib.Path.home()))
-        return base / "Taski" / "state.json"
-    # Linux / other
-    base = pathlib.Path(os.environ.get("XDG_DATA_HOME", pathlib.Path.home() / ".local" / "share"))
-    return base / "Taski" / "state.json"
 
-STATE_FILE = _state_file()
+def _git(*args, cwd=ROOT):
+    import subprocess
+    try:
+        r = subprocess.run(["git"] + list(args), cwd=cwd, capture_output=True, text=True, timeout=15)
+        return r.returncode == 0, r.stdout.strip()
+    except Exception:
+        return False, ""
+
+
+def git_pull():
+    ok, out = _git("pull", "--rebase")
+    if ok:
+        print(f"  sync ↓ {out.splitlines()[0] if out else 'ok'}")
+
+
+def git_push():
+    _git("add", "state.json")
+    ok, _ = _git("diff", "--cached", "--quiet")
+    if ok:
+        return  # нет изменений
+    _git("commit", "-m", "state")
+    _git("push")
 ASSETS = ROOT / "assets"
 FONTS_DIR = ASSETS / "fonts"
 
@@ -141,6 +152,7 @@ class TaskiHandler(http.server.SimpleHTTPRequestHandler):
                 state = json.loads(body)
                 STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
                 STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+                threading.Thread(target=git_push, daemon=True).start()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
@@ -188,6 +200,8 @@ class TaskiHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     NO_BROWSER = "--no-browser" in sys.argv
     ensure_assets()
+    print("Синхронизация…")
+    git_pull()
     print(f"Taski → http://localhost:{PORT}")
 
     if NO_BROWSER:

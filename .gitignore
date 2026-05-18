@@ -17,5 +17,3 @@ __pycache__/
 # macOS
 .DS_Store
 
-# Данные приложения (хранятся вне репо)
-state.json
