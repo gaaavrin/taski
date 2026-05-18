@@ -1,0 +1,21 @@
+# Скачиваемые ресурсы (генерируются при первом запуске)
+assets/react.js
+assets/react-dom.js
+assets/babel.js
+assets/fonts.css
+assets/fonts/
+
+# Node
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Данные приложения (хранятся вне репо)
+state.json

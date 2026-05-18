@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Taski</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #F1EEE7;
+    font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased; }
+  #root { height: 100%; }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb { background: #D6D2C7; border: 2px solid transparent; background-clip: padding-box; }
+  *::-webkit-scrollbar-thumb:hover { background: #8C8A82; border: 2px solid transparent; background-clip: padding-box; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  @keyframes atlSlideIn { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes atlPop { from { transform: translateY(-6px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+  input, textarea, button { font-family: inherit; }
+  button, input, a { -webkit-app-region: no-drag; }
+  #loading { position: fixed; inset: 0; background: #F1EEE7; display: flex;
+    align-items: center; justify-content: center;
+    font: 14px/1 -apple-system, sans-serif; color: #8C8A82; }
+</style>
+</head>
+<body>
+<div id="loading">Загрузка…</div>
+<div id="root"></div>
+
+<script src="/assets/react.js"></script>
+<script src="/assets/react-dom.js"></script>
+<script src="/assets/babel.js"></script>
+
+<script>
+document.getElementById('loading').remove();
+document.title = 'Taski v3';
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.getElementById('errbanner') || document.createElement('div');
+  d.id = 'errbanner';
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c00;color:#fff;padding:8px 12px;font:12px monospace;z-index:9999;white-space:pre-wrap;overflow:auto;max-height:120px';
+  d.textContent = 'ERR: ' + msg + '\n' + (src||'').split('/').pop() + ':' + line + '\n' + (err&&err.stack||'');
+  document.body.appendChild(d);
+};
+</script>
+
+<script src="/data.js?v=13"></script>
+<script src="/prototype/state.js?v=13"></script>
+<script type="text/babel" src="/prototype/tweaks-panel.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/atoms.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/sidebar.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/tasks.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/calendar.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/detail.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/menubar.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/training.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/coins.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/habits.jsx?v=13"></script>
+<script type="text/babel" src="/prototype/app.jsx?v=13"></script>
+</body>
+</html>

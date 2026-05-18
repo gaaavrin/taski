@@ -1,0 +1,35 @@
+{
+  "name": "taski",
+  "version": "1.0.0",
+  "description": "Kanban board – personal productivity app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^29.4.6",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.gaaavrin.taski",
+    "productName": "Taski",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.icns"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/.cache"
+    ]
+  }
+}
