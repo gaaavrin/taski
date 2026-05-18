@@ -26,9 +26,11 @@ def _git(*args, cwd=ROOT):
 
 
 def git_pull():
-    ok, out = _git("pull", "--rebase")
+    # Всегда берём state.json с удалённого — последний push побеждает
+    ok, _ = _git("fetch", "origin")
     if ok:
-        print(f"  sync ↓ {out.splitlines()[0] if out else 'ok'}")
+        _git("checkout", "origin/main", "--", "state.json")
+        print("  sync ↓")
 
 
 def git_push():
@@ -37,7 +39,14 @@ def git_push():
     if ok:
         return  # нет изменений
     _git("commit", "-m", "state")
-    _git("push")
+    ok, _ = _git("push")
+    if not ok:
+        # Если push отклонён (другая машина успела запушить) — подтягиваем и пушим
+        _git("fetch", "origin")
+        _git("checkout", "origin/main", "--", "state.json")
+        _git("add", "state.json")
+        _git("commit", "--amend", "--no-edit")
+        _git("push", "--force-with-lease")
 ASSETS = ROOT / "assets"
 FONTS_DIR = ASSETS / "fonts"
 
